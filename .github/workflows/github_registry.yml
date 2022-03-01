@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+  pull_request:
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # - name: build and test code
+    #   run: make build
+
+    - name: build and push image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+        repository: ${{ secrets.DOCKER_HUB_USERNAME }}/SimpleWhaleDemo
+        dockerfile: Dockerfile
+        always_pull: true
+        tags: latest
